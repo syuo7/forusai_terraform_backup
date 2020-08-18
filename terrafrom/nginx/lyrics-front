@@ -1,0 +1,10 @@
+server{
+  listen 9000;
+  server_name 35.221.109.191;
+
+  location / {
+    try_files $uri /index.html;
+  }
+  root /usr/share/nginx/html;
+  index index.html;
+}

@@ -1,0 +1,8 @@
+FROM node:14.5
+RUN mkdir $HOME/deploy
+WORKDIR $HOME/deploy
+COPY . $HOME/deploy
+COPY package.json $HOME/deploy
+RUN npm install
+ENTRYPOINT ["npm"]
+CMD ["run", "dev"]

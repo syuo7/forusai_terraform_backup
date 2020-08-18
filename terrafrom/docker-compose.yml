@@ -1,0 +1,17 @@
+version: "3"
+services:
+
+  front:
+    image: front:latest
+    depends_on:
+      - backend
+
+    restart: always
+    ports:
+      - "9000:9000"
+                                                 
+  backend:
+    image: backend:latest
+    restart: always
+    ports:
+      - "9001:9001"

@@ -1,0 +1,14 @@
+#### Backend ####
+
+1. app.js 아이피변경 (http://xxxxxx:9000)
+2. .env 설정
+3. Dockerfile build
+4. docker run 
+- docker run -d -p 9001:9001 --env-file .env backend (9001번 포트 허용)
+
+
+#### Frontend ####
+1. nginx 폴더생성 후 nginx.conf 및 lyrics-front 파일복사
+ - lyrics-front에서 ip변경
+2. Dockerfile build
+3. docker run -d -p 9000:9000 front
