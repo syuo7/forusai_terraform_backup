@@ -1,6 +1,6 @@
 server{
   listen 9000;
-  server_name 35.221.109.191;
+  server_name ent.forus.ai;
 
   location / {
     try_files $uri /index.html;

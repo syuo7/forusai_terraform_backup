@@ -2,16 +2,19 @@ version: "3"
 services:
 
   front:
-    image: front:latest
+    image: gcr.io/ai-between-us/forus-frontend
     depends_on:
       - backend
-
     restart: always
     ports:
       - "9000:9000"
                                                  
   backend:
-    image: backend:latest
+    image: gcr.io/ai-between-us/forus-backend
     restart: always
     ports:
       - "9001:9001"
+    env_file:
+      - .env
+    environment:
+      - DEPLOY_ENV=prod
