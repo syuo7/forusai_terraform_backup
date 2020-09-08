@@ -1,10 +1,24 @@
-server{
+server {
   listen 9000;
   server_name ent.forus.ai;
-
   location / {
+    sub_filter </head> '<script>(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga");ga("create","UA-177055358-1","auto");ga("send","pageview");</script><script data-ad-client="ca-pub-3782796435480651" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script></head>';        
+    sub_filter_once on;
+    sub_filter_types text/html;
+    proxy_set_header Accept-Encoding "";
+    proxy_set_header X-Forwarded-For $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
     try_files $uri /index.html;
   }
-  root /usr/share/nginx/html;
+  location =/sitemap.xml {
+    alias /usr/src/app/build/sitemap.xml;
+  }
+  location =/robots.txt {
+    alias /usr/src/app/build/robots.txt;
+  }
+  root /usr/src/app/build;
   index index.html;
 }

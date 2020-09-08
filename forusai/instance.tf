@@ -5,7 +5,7 @@ resource "google_compute_address" "ai-between-us-ip-address" {
 
 
 resource "google_compute_instance" "ai-between-us" {
-  depends_on   = [google_compute_router_nat.nat-gateway]
+  #  depends_on   = [google_compute_router_nat.nat-gateway]
   name         = var.app_name
   machine_type = "n1-standard-1"
   zone         = var.gcp_zone
@@ -30,8 +30,20 @@ resource "google_compute_instance" "ai-between-us" {
   }
 
   provisioner "file" {
-    source      = ".env"
-    destination = "$HOME/.env"
+    source      = ".front-env"
+    destination = "$HOME/.front-env"
+    connection {
+      host        = self.network_interface[0].access_config[0].nat_ip
+      type        = "ssh"
+      user        = "forusai"
+      private_key = "${file("${var.private_key_path}")}"
+      agent       = false
+    }
+  }
+
+  provisioner "file" {
+    source      = ".backend-env"
+    destination = "$HOME/.backend-env"
     connection {
       host        = self.network_interface[0].access_config[0].nat_ip
       type        = "ssh"
@@ -44,6 +56,18 @@ resource "google_compute_instance" "ai-between-us" {
   provisioner "file" {
     source      = "docker-compose.yml"
     destination = "$HOME/docker-compose.yml"
+    connection {
+      host        = self.network_interface[0].access_config[0].nat_ip
+      type        = "ssh"
+      user        = "forusai"
+      private_key = "${file("${var.private_key_path}")}"
+      agent       = false
+    }
+  }
+
+  provisioner "file" {
+    source      = "./nginx/lyrics-front"
+    destination = "$HOME/lyrics-front"
     connection {
       host        = self.network_interface[0].access_config[0].nat_ip
       type        = "ssh"
@@ -74,5 +98,15 @@ resource "google_compute_instance" "ai-between-us" {
       #"git clone https://github.com/forus-ai/lyric-back.git"
     ]
   }
+  depends_on = [
+    google_compute_global_forwarding_rule.global_forwarding_rule,
+    google_compute_router_nat.nat-gateway,
+    #google_compute_target_https_proxy.target_https_proxy,
+    # google_compute_backend_service.backend_service,
+    #google_compute_backend_service.backend,
+    # google_compute_instance_group.ai-between-us-group,
+    #google_compute_health_check.healthcheck
+
+  ]
 
 }

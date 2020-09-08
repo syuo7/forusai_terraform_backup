@@ -2,19 +2,23 @@ version: "3"
 services:
 
   front:
-    image: gcr.io/ai-between-us/forus-frontend
+    image: gcr.io/ai-between-us/forus-frontend:prod
     depends_on:
       - backend
     restart: always
+    env_file:
+      - .front-env
+    volumes:
+      - ./lyrics-front:/etc/nginx/sites-available/lyrics-front
     ports:
       - "9000:9000"
                                                  
   backend:
-    image: gcr.io/ai-between-us/forus-backend
+    image: gcr.io/ai-between-us/forus-backend:latest
     restart: always
     ports:
       - "9001:9001"
     env_file:
-      - .env
+      - .backend-env
     environment:
       - DEPLOY_ENV=prod

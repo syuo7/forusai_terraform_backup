@@ -13,6 +13,7 @@ resource "google_compute_subnetwork" "ai_between_us_subnet" {
   ip_cidr_range = var.private_subnet_cidr
   network       = google_compute_network.vpc.id
   region        = var.gcp_region
+  depends_on = [ google_compute_network.vpc ]
 }
 /* Specific private ip 
 
@@ -35,6 +36,7 @@ resource "google_compute_address" "nat-ip" {
 resource "google_compute_router" "nat-router" {
   name    = "${var.app_name}-nat-router"
   network = "${google_compute_network.vpc.id}"
+  depends_on = [ google_compute_network.vpc ]
 }
 
 resource "google_compute_router_nat" "nat-gateway" {
