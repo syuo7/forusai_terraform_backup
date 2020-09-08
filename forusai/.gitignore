@@ -3,4 +3,3 @@ terraform.*
 *.json
 .*-env
 *.pem
-*.txt

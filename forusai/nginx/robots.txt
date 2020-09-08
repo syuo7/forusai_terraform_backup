@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ent.forus.ai/sitemap.xml
