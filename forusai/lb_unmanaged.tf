@@ -1,11 +1,3 @@
-# LB with unmanaged instance group 
-
-/*
-module "global_ip" {
-  source = "./lb_global_ip"
-}
-*/
-
 data "terraform_remote_state" "ip" {
   backend = "gcs"
   config = {
@@ -34,18 +26,6 @@ resource "google_compute_global_forwarding_rule" "global_forwarding_rule_ssl" {
   target     = google_compute_target_https_proxy.target_https_proxy.self_link
   port_range = 443
 }
-/*
-# used to forward traffic to the correct load balancer for HTTP loadbalancing (SSL)
-resource "google_compute_global_forwarding_rule" "backend_global_forwarding_rule_ssl" {
-  name    = "${var.app_name}-backend-global-forwarding-rule-ssl"
-  project = var.app_project
-  #ip_address = google_compute_global_address.forusai_ip.address
-  ip_address = data.terraform_remote_state.ip.outputs.forusai_ip
-  target     = google_compute_target_https_proxy.backend_target_https_proxy.self_link
-  port_range = 9001
-}
-*/
-
 
 # Used by one or more global forwarding rule to route incoming HTTP request to a URL map
 resource "google_compute_target_http_proxy" "target_http_proxy" {
@@ -61,16 +41,6 @@ resource "google_compute_target_https_proxy" "target_https_proxy" {
   project          = var.app_project
   url_map          = google_compute_url_map.url_map.self_link
 }
-
-/*
-# Used by one or more global forwarding rule to route incoming HTTP request to a URL map(SSL)
-resource "google_compute_target_https_proxy" "backend_target_https_proxy" {
-  name             = "${var.app_name}-backend-proxy-ssl"
-  ssl_certificates = [google_compute_ssl_certificate.forusai.id]
-  project          = var.app_project
-  url_map          = google_compute_url_map.backend.self_link
-}
-*/
 
 # define a group of virtual machines that will serve traffic for load balancing
 resource "google_compute_backend_service" "backend_service" {
@@ -163,45 +133,13 @@ resource "google_compute_url_map" "url_map" {
   path_matcher {
     name            = "forusai-front"
     default_service = google_compute_backend_service.backend_service.self_link
-    /*
-    path_rule {
-      paths   = ["/sitemap.xml"]
-      service = google_compute_backend_service.backend.self_link
-    }
-    
-    path_rule {
-      paths   = ["/backend"]
-      service = google_compute_backend_service.backend.self_link
-    }
-    path_rule {
-      paths   = ["ent.forus.ai"]
-      service = google_compute_backend_service.backend_service.self_link
-    }
-    */
   }
-  
   
   path_matcher {
     name            = "forusai-backend"
     default_service = google_compute_backend_service.backend.self_link
-    /*
-    path_rule {
-      paths = ["backend.forus.ai"]
-      service = google_compute_backend_service.backend.self_link
-    }
-    */
   }
 }
-
-
-/*
-# Used to route requests to a backend service based on rules that you define for the host and path of an Incoming URL
-resource "google_compute_url_map" "backend" {
-  name            = "${var.app_name}-backend-load-balancer"
-  project         = var.app_project
-  default_service = google_compute_backend_service.backend.self_link
-}
-*/
 
 # Used to route requests to a backend service based on rules that you define for the host and path of an Incoming URL
 resource "google_compute_url_map" "https_redirect" {
@@ -221,18 +159,6 @@ output "load-balancer-ip-address" {
   value = google_compute_global_forwarding_rule.global_forwarding_rule_ssl.ip_address
 }
 
-/*
-resource "google_compute_managed_ssl_certificate" "forusai" {
-  provider = google-beta
-
-  name = "ssl-for-forusai"
-
-  managed {
-    domains = ["forus.ai."]
-  }
-}
-*/
-
 resource "google_compute_ssl_certificate" "forusai" {
   # The name will contain 8 random hex digits,
   # e.g. "my-certificate-48ab27cd2a"
@@ -244,22 +170,3 @@ resource "google_compute_ssl_certificate" "forusai" {
     create_before_destroy = true
   }
 }
-
-/*
-resource "google_dns_managed_zone" "zone" {
-  provider = google-beta
-
-  name     = "dnszone"
-  dns_name = "forus.ai."
-}
-
-resource "google_dns_record_set" "set" {
-  provider = google-beta
-
-  name         = "ent.forus.ai."
-  type         = "A"
-  ttl          = 3600
-  managed_zone = google_dns_managed_zone.zone.name
-  rrdatas      = [google_compute_global_forwarding_rule.global_forwarding_rule_ssl.ip_address]
-}
-*/

@@ -3,3 +3,4 @@ terraform.*
 *.json
 .*-env
 *.pem
+.DS_Store

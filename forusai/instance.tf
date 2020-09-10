@@ -9,7 +9,7 @@ resource "google_compute_instance" "ai-between-us" {
   name         = var.app_name
   machine_type = "n1-standard-1"
   zone         = var.gcp_zone
-  tags         = ["ssh", "http", "https", "service-port"]
+  tags         = ["ssh", "http", "https", "front-port", "backend-port"]
 
   boot_disk {
     initialize_params {
