@@ -48,6 +48,6 @@ resource "google_compute_router_nat" "nat-gateway" {
   depends_on                         = [google_compute_address.nat-ip]
 }
 
-output "nat_ip_address" {
+output "nat_ip_address1" {
   value = google_compute_address.nat-ip.address
 }

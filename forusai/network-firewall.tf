@@ -49,7 +49,9 @@ resource "google_compute_firewall" "backend-port" {
     /*
    "${google_compute_subnetwork.ai_between_us_subnet.ip_cidr_range}",
    "${google_compute_global_forwarding_rule.global_forwarding_rule_ssl.ip_address}",
-   "115.178.87.144"
+   "115.178.87.144",
+   "${google_compute_address.ai-between-us-ip-address.address}",
+   "127.0.0.1"
    */
   ]
   allow {

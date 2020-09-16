@@ -95,7 +95,6 @@ resource "google_compute_instance" "ai-between-us" {
       "sudo chmod +x /usr/local/bin/docker-compose",
       "sudo cd $HOME",
       "sudo docker-compose up -d"
-      #"git clone https://github.com/forus-ai/lyric-back.git"
     ]
   }
   depends_on = [

@@ -32,3 +32,8 @@ variable "private_subnet_cidr" {
   default     = "10.10.0.0/24"
   description = "private subnet cidr of forusai"
 }
+
+variable "machine_type" {
+  type = "string"
+  description = "gcp instance price type"
+}

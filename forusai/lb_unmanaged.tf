@@ -155,7 +155,7 @@ resource "google_compute_url_map" "https_redirect" {
 }
 
 # Show external ip address of load balancer 
-output "load-balancer-ip-address" {
+output "load-balancer-ip-address1" {
   value = google_compute_global_forwarding_rule.global_forwarding_rule_ssl.ip_address
 }
 
